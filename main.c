@@ -4,6 +4,7 @@
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 struct coordinates
 {
@@ -33,12 +34,42 @@ int set_pixel_value(const struct fb_var_screeninfo info, char* tela, const struc
     return 0;
 }
 
-// int draw_line(struct fb_var_screeninfo info, char* tela, const struct coordinates start, const struct coordinates end)
-// {
-//     if (validate_coordinates(info, start) != 0 || validate_coordinates(info, end) != 0) return -1;
-//
-//     return 0;
-// }
+
+int draw_line(struct fb_var_screeninfo info, char* screen, const struct coordinates start, const struct coordinates end)
+{
+    //breBresenham's line algorithm
+    if (validate_coordinates(info, start) != 0 || validate_coordinates(info, end) != 0) return -1;
+
+    int dx = abs((int)end.x - (int)start.x);
+    int dy = abs((int)end.y - (int)start.y);
+    int sx = start.x < end.x ? 1 : -1;
+    int sy = start.y < end.y ? 1 : -1;
+    int err = (dx > dy ? dx : -dy) / 2;
+    int e2;
+
+    struct coordinates current_point = start;
+
+    while (1)
+    {
+        set_pixel_in_framebuffer(info, screen, current_point);
+
+        if (current_point.x == end.x && current_point.y == end.y) break;
+
+        e2 = err;
+        if (e2 > -dx)
+        {
+            err -= dy;
+            current_point.x += sx;
+        }
+        if (e2 < dy)
+        {
+            err += dx;
+            current_point.y += sy;
+        }
+    }
+
+    return 0;
+}
 
 int main()
 {
@@ -52,13 +83,13 @@ int main()
     unsigned int tamanho = info.xres * info.yres / 8;
     char* screen = (char*)mmap(0, tamanho, PROT_WRITE, MAP_SHARED, fb, 0);
 
-    struct coordinates point = {50, 50};
+    struct coordinates point_a = {10, 10};
+    struct coordinates point_b = {118, 54};
+
     struct coordinates invalid_point = {150, 50};
 
-    set_pixel_value(info, screen, point);
-
-
-    if (set_pixel_value(info, screen, invalid_point) != 0)
+    set_pixel_value(info, screen, invalid_point);
+    if (draw_line(info, screen, point_a, point_b) != 0)
     {
         printf("Error: coordinate (%u, %u) is invalid, could not set pixel.\n",
                invalid_point.x, invalid_point.y);
