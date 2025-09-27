@@ -29,6 +29,7 @@ int set_pixel_value(const struct fb_var_screeninfo info, char* tela, const struc
 }
 
 int main() {
+int main(){
     int fb = open("/dev/fb0", O_RDWR);
 
     struct fb_var_screeninfo info;
@@ -36,7 +37,7 @@ int main() {
 
     printf("Tela: %dx%d\n", info.xres, info.yres);
 
-    int tamanho = info.xres * info.yres / 8;
+    unsigned int tamanho = info.xres * info.yres / 8;
     char* screen = (char*)mmap(0, tamanho, PROT_WRITE, MAP_SHARED, fb, 0);
 
     struct coordinates point;
