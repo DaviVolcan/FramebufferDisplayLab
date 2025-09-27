@@ -5,10 +5,17 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
-void set_pixel_value(struct fb_var_screeninfo info, char* tela, int x, int y){
+struct cordinate
+{
+    unsigned int x;
+    unsigned int y;
+};
+
+
+void set_pixel_value(const struct fb_var_screeninfo info, char* tela, const struct cordinate point){
     const unsigned int bytes_per_line = info.xres / 8;
-    const unsigned int mem_pos = y * bytes_per_line + x * info.bits_per_pixel / 8;
-    const char value = 0x01 << x % 8;
+    const unsigned int mem_pos = point.y * bytes_per_line + point.x * info.bits_per_pixel / 8;
+    const char value = 0x01 << point.x % 8;
     printf("mem_pos = %d, value = %d (0x%02X)\n", mem_pos, value,
            (unsigned char)value);
     tela[mem_pos] |= value;
@@ -25,10 +32,13 @@ int main() {
     int tamanho = info.xres * info.yres / 8;
     char* screen = (char*)mmap(0, tamanho, PROT_WRITE, MAP_SHARED, fb, 0);
 
-    int x = 0;
-    int y = 0;
+    struct cordinate point;
 
     set_pixel_value(info, screen, x, y);
+    point.x = 0;
+    point.y = 0;
+
+    set_pixel_value(info, screen, point);
 
     close(fb);
     return 0;
