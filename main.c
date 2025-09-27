@@ -29,8 +29,13 @@ int set_pixel_value(const struct fb_var_screeninfo info, char* tela, const struc
 
 }
 
-int main() {
-int main(){
+// int draw_line(struct fb_var_screeninfo info, char* tela, const struct coordinates start, const struct coordinates end)
+// {
+//     if (validate_coordinates(info, start) != 0 || validate_coordinates(info, end) != 0) return -1;
+//
+//     return 0;
+// }
+
 int main()
 {
     int fb = open("/dev/fb0", O_RDWR);
