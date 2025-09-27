@@ -11,6 +11,11 @@ struct coordinates
     unsigned int y;
 };
 
+int validate_coordinates(const struct fb_var_screeninfo info, const struct coordinates point)
+{
+    if(point.x >= info.xres || point.y >= info.yres) return -1;
+        return 0;
+}
 
 void set_pixel_value(const struct fb_var_screeninfo info, char* tela, const struct coordinates point)
 {
