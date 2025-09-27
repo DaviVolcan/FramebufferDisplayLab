@@ -17,14 +17,15 @@ int validate_coordinates(const struct fb_var_screeninfo info, const struct coord
     return 0;
 }
 
-void set_pixel_value(const struct fb_var_screeninfo info, char* tela, const struct coordinates point)
+int set_pixel_value(const struct fb_var_screeninfo info, char* tela, const struct coordinates point)
 {
-    const unsigned int bytes_per_line = info.xres / 8;
-    const unsigned int mem_pos = point.y * bytes_per_line + point.x * info.bits_per_pixel / 8;
-    const char value = 0x01 << point.x % 8;
-    printf("mem_pos = %d, value = %d (0x%02X)\n", mem_pos, value,
-           (unsigned char)value);
-    tela[mem_pos] |= value;
+    if (validate_coordinates(info,point)!= 0 ) return -1;
+        const unsigned int bytes_per_line = info.xres / 8;
+        const unsigned int mem_pos = point.y * bytes_per_line + point.x * info.bits_per_pixel / 8;
+        const char value = 0x01 << point.x % 8;
+        tela[mem_pos] |= value;
+    return 0;
+
 }
 
 int main() {
