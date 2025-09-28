@@ -103,6 +103,17 @@ void draw_character(const struct framebuffer_context* fb, const struct coordinat
     }
 }
 
+void print_string(const struct framebuffer_context* fb, struct coordinates offset, const char *str)
+{
+    const size_t size = strlen(str);
+    for (int i = 0; i < size; ++i)
+    {
+        draw_character(fb,offset,str[i]);
+        offset.x += 8;
+    }
+
+}
+
 int main()
 {
     int fb = open("/dev/fb0", O_RDWR);
@@ -120,7 +131,9 @@ int main()
     struct coordinates invalid_point = {150, 50};
 
 
-    draw_character(&fb_ctx, point_a, 0x29);
+    char str[] = "VolcanLab";
+
+    print_string(&fb_ctx, point_a, str);
     close(fb);
     return 0;
 }
