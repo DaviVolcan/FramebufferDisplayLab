@@ -28,8 +28,6 @@ int validate_coordinates(const struct fb_var_screeninfo info, const struct coord
 
 static void set_pixel_in_framebuffer(const struct framebuffer_context* fb, const struct coordinates point)
 {
-    const unsigned int bytes_per_line = info.xres / 8;
-    const unsigned int mem_pos = point.y * bytes_per_line + point.x * info.bits_per_pixel / 8;
     const unsigned int bytes_per_line = fb->info.xres / 8;
     const unsigned int mem_pos = point.y * bytes_per_line + point.x * fb->info.bits_per_pixel / 8;
     const char value = 0x01 << point.x % 8;
