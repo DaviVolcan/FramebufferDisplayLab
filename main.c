@@ -103,12 +103,12 @@ void draw_character(const struct framebuffer_context* fb, const struct coordinat
     }
 }
 
-void print_string(const struct framebuffer_context* fb, struct coordinates offset, const char *str)
+void draw_string(const struct framebuffer_context* fb, struct coordinates offset, const char* str)
 {
     const size_t size = strlen(str);
     for (int i = 0; i < size; ++i)
     {
-        draw_character(fb,offset,str[i]);
+        draw_character(fb, offset, str[i]);
         offset.x += 8;
     }
 
@@ -133,7 +133,8 @@ int main()
 
     char str[] = "VolcanLab";
 
-    print_string(&fb_ctx, point_a, str);
+    draw_string(&fb_ctx, point_a, str);
+    munmap(fb_ctx.screen, tamanho);
     close(fb);
     return 0;
 }
