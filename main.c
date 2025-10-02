@@ -111,7 +111,6 @@ void draw_string(const struct framebuffer_context* fb, struct coordinates offset
         draw_character(fb, offset, str[i]);
         offset.x += 8;
     }
-
 }
 
 int main()
